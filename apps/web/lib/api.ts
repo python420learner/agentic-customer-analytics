@@ -26,3 +26,17 @@ export async function getAgentActions() {
   const json = await res.json();
   return json.data;
 }
+
+export async function runCartAbandonmentAgent() {
+  const res = await fetch(`${API_URL}/agents/cart-abandonment/run`, {
+    method: "POST",
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to run cart abandonment agent");
+  }
+
+  const json = await res.json();
+  return json.data;
+}
