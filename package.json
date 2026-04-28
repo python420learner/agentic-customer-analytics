@@ -1,0 +1,21 @@
+{
+  "name": "agentic-customer-analytics",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "docker compose -f docker-compose.dev.yml up --build",
+    "down": "docker compose -f docker-compose.dev.yml down",
+    "logs": "docker compose -f docker-compose.dev.yml logs -f",
+    "db:studio": "npm --workspace packages/database run studio",
+    "db:migrate": "npm --workspace packages/database run migrate"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

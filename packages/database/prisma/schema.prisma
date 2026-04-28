@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model CustomerEvent {
+  id           String   @id @default(cuid())
+  anonymousId String
+  userId       String?
+  sessionId    String?
+  eventName    String
+  pageUrl      String?
+  productId    String?
+  category     String?
+  value        Float?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([anonymousId])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([eventName])
+  @@index([createdAt])
+}
+
+model CustomerProfile {
+  id             String   @id @default(cuid())
+  anonymousId    String   @unique
+  userId         String?
+  firstSeenAt    DateTime @default(now())
+  lastSeenAt     DateTime @default(now())
+  totalEvents    Int      @default(0)
+  totalCartAdds  Int      @default(0)
+  totalPurchases Int      @default(0)
+  totalRevenue   Float    @default(0)
+  riskScore      Float    @default(0)
+}
