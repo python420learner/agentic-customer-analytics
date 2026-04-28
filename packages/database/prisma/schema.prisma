@@ -44,3 +44,20 @@ model CustomerProfile {
   totalRevenue   Float    @default(0)
   riskScore      Float    @default(0)
 }
+
+model AgentAction {
+  id            String   @id @default(cuid())
+  agentName     String
+  actionType    String
+  anonymousId   String
+  userId        String?
+  reason        String
+  status        String   @default("pending")
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([agentName])
+  @@index([actionType])
+  @@index([anonymousId])
+  @@index([status])
+}
