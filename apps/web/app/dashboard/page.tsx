@@ -1,0 +1,101 @@
+import { getDashboardSummary } from "@/lib/api";
+
+export default async function DashboardPage() {
+  const data = await getDashboardSummary();
+
+  return (
+    <main className="min-h-screen bg-slate-50 px-8 py-10 text-slate-950">
+      <section className="max-w-5xl">
+        <p className="mb-2 text-sm font-bold text-blue-600">
+          Agentic Customer Behaviour Analytics
+        </p>
+
+        <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
+          Customer Behaviour Dashboard
+        </h1>
+
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">
+          Track customer actions, revenue signals, and behavioural events from
+          the e-commerce storefront.
+        </p>
+      </section>
+
+      <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <MetricCard title="Total Events" value={data.totalEvents} />
+        <MetricCard title="Customers" value={data.totalCustomers} />
+        <MetricCard title="Cart Adds" value={data.cartAdds} />
+        <MetricCard title="Purchases" value={data.purchases} />
+        <MetricCard title="Revenue" value={`₹${data.revenue}`} />
+      </section>
+
+      <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div>
+          <h2 className="text-xl font-semibold">Recent Events</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Latest tracked customer actions
+          </p>
+        </div>
+
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-slate-500">
+                <th className="px-3 py-3 font-medium">Event</th>
+                <th className="px-3 py-3 font-medium">Anonymous ID</th>
+                <th className="px-3 py-3 font-medium">Product</th>
+                <th className="px-3 py-3 font-medium">Category</th>
+                <th className="px-3 py-3 font-medium">Value</th>
+                <th className="px-3 py-3 font-medium">Time</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {data.recentEvents.map((event: any) => (
+                <tr
+                  key={event.id}
+                  className="border-b border-slate-100 hover:bg-slate-50"
+                >
+                  <td className="px-3 py-3 font-medium text-slate-900">
+                    {event.eventName}
+                  </td>
+                  <td className="px-3 py-3 text-slate-600">
+                    {event.anonymousId}
+                  </td>
+                  <td className="px-3 py-3 text-slate-600">
+                    {event.productId ?? "-"}
+                  </td>
+                  <td className="px-3 py-3 text-slate-600">
+                    {event.category ?? "-"}
+                  </td>
+                  <td className="px-3 py-3 text-slate-600">
+                    {event.value ?? "-"}
+                  </td>
+                  <td className="px-3 py-3 text-slate-600">
+                    {new Date(event.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function MetricCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: string | number;
+}) {
+  return (
+    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-sm text-slate-500">{title}</p>
+      <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+        {value}
+      </h2>
+    </article>
+  );
+}
