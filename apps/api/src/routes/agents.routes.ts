@@ -17,6 +17,8 @@ export function createAgentsRouter(prisma: PrismaClient) {
       });
 
       let createdActions = 0;
+      let skippedPurchased = 0;
+      let skippedExisting = 0;
 
       for (const cartEvent of cartEvents) {
         const purchaseAfterCart = await prisma.customerEvent.findFirst({
@@ -29,18 +31,35 @@ export function createAgentsRouter(prisma: PrismaClient) {
           },
         });
 
-        if (purchaseAfterCart) continue;
+        if (purchaseAfterCart) {
+          skippedPurchased++;
+          continue;
+        }
 
-        const existingAction = await prisma.agentAction.findFirst({
+        const existingActions = await prisma.agentAction.findMany({
           where: {
             agentName: "cart_abandonment_agent",
             actionType: "send_recovery_offer",
             anonymousId: cartEvent.anonymousId,
-            status: "pending",
           },
         });
 
-        if (existingAction) continue;
+        const existingActionForCartEvent = existingActions.some((action) => {
+          if (
+            !action.metadata ||
+            typeof action.metadata !== "object" ||
+            Array.isArray(action.metadata)
+          ) {
+            return false;
+          }
+
+          return action.metadata.cartEventId === cartEvent.id;
+        });
+
+        if (existingActionForCartEvent) {
+          skippedExisting++;
+          continue;
+        }
 
         await prisma.agentAction.create({
           data: {
@@ -57,6 +76,7 @@ export function createAgentsRouter(prisma: PrismaClient) {
               category: cartEvent.category,
               cartValue: cartEvent.value,
               cartTime: cartEvent.createdAt,
+              inferredIntent: "cart_abandonment",
             },
           },
         });
@@ -69,6 +89,8 @@ export function createAgentsRouter(prisma: PrismaClient) {
         data: {
           checkedCartEvents: cartEvents.length,
           createdActions,
+          skippedExisting,
+          skippedPurchased,
         },
       });
     } catch (error) {
@@ -100,6 +122,39 @@ export function createAgentsRouter(prisma: PrismaClient) {
       return res.status(500).json({
         success: false,
         error: "Agent actions fetch failed",
+      });
+    }
+  });
+
+  router.patch("/actions/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const allowedStatuses = ["pending", "approved", "executed", "dismissed"];
+
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid status",
+        });
+      }
+
+      const action = await prisma.agentAction.update({
+        where: { id },
+        data: { status },
+      });
+
+      return res.json({
+        success: true,
+        data: action,
+      });
+    } catch (error) {
+      console.error("Agent action status update failed:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: "Agent action status update failed",
       });
     }
   });

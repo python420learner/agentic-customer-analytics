@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { customerEventSchema } from "../schemas/event.schema";
 
 export function createEventsRouter(prisma: PrismaClient) {
@@ -19,7 +19,7 @@ export function createEventsRouter(prisma: PrismaClient) {
           productId: data.productId,
           category: data.category,
           value: data.value,
-          metadata: data.metadata,
+          metadata: data.metadata as Prisma.InputJsonValue | undefined,
         },
       });
 

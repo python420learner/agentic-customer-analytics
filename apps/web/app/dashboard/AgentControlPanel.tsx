@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { runCartAbandonmentAgent } from "@/lib/api";
 
 export default function AgentControlPanel() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<null | {
     checkedCartEvents: number;
     createdActions: number;
+    skippedExisting?: number;
+    skippedPurchased?: number;
   }>(null);
   const [error, setError] = useState("");
 
@@ -20,7 +24,7 @@ export default function AgentControlPanel() {
       const data = await runCartAbandonmentAgent();
       setResult(data);
 
-      window.location.reload();
+      router.refresh();
     } catch {
       setError("Failed to run agent");
     } finally {
@@ -54,6 +58,13 @@ export default function AgentControlPanel() {
         <div className="mt-5 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm text-green-700">
           Checked {result.checkedCartEvents} cart events. Created{" "}
           {result.createdActions} new agent actions.
+          {(result.skippedExisting || result.skippedPurchased) && (
+            <span>
+              {" "}
+              Skipped {result.skippedExisting ?? 0} existing and{" "}
+              {result.skippedPurchased ?? 0} purchased.
+            </span>
+          )}
         </div>
       )}
 
