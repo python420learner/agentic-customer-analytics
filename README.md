@@ -26,6 +26,11 @@ Root `.env` should include:
 DATABASE_URL="postgresql://aca_user:aca_password@localhost:5433/aca_db"
 API_PORT=4000
 NEXT_PUBLIC_API_URL="http://localhost:4000"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GOOGLE_REDIRECT_URI="http://localhost:3000/api/auth/google/callback"
+AUTH_SESSION_SECRET="replace-with-a-long-random-string"
 ```
 
 `apps/web/.env.local` should include:
@@ -33,6 +38,16 @@ NEXT_PUBLIC_API_URL="http://localhost:4000"
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
+
+## Google Login Setup
+
+In Google Cloud Console, create an OAuth client for a web application and add this authorized redirect URI:
+
+```text
+http://localhost:3000/api/auth/google/callback
+```
+
+Then paste the client ID and secret into the root `.env`, and replace `AUTH_SESSION_SECRET` with a long random value.
 
 ## First-Time Setup
 

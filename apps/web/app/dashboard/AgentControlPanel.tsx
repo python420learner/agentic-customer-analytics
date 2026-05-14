@@ -33,43 +33,42 @@ export default function AgentControlPanel() {
   }
 
   return (
-    <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <section className="border border-black/10 bg-[#171411] p-6 text-white lg:p-7">
+      <div className="flex flex-col gap-6">
         <div>
-          <p className="text-sm font-bold text-blue-600">Agent Control</p>
-          <h2 className="mt-1 text-xl font-semibold">
-            Cart Abandonment Agent
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Detect users who added products to cart but did not complete purchase.
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45">
+            Agent Control
+          </p>
+          <h2 className="mt-2 font-serif text-3xl">Cart Abandonment Agent</h2>
+          <p className="mt-3 text-sm leading-7 text-white/60">
+            Scan recent cart intent, suppress customers who already purchased,
+            and create recovery offers for human review.
           </p>
         </div>
 
         <button
           onClick={handleRunAgent}
           disabled={loading}
-          className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          className="border border-white/20 bg-white px-5 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-black hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Running Agent..." : "Run Agent"}
         </button>
       </div>
 
       {result && (
-        <div className="mt-5 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm text-green-700">
-          Checked {result.checkedCartEvents} cart events. Created{" "}
-          {result.createdActions} new agent actions.
-          {(result.skippedExisting || result.skippedPurchased) && (
-            <span>
-              {" "}
-              Skipped {result.skippedExisting ?? 0} existing and{" "}
-              {result.skippedPurchased ?? 0} purchased.
-            </span>
-          )}
+        <div className="mt-6 grid gap-3 border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+          <p className="font-medium text-white">Run complete</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <span>Checked {result.checkedCartEvents} cart events</span>
+            <span>Created {result.createdActions} actions</span>
+            <span>Skipped {result.skippedExisting ?? 0} existing</span>
+            <span>Skipped {result.skippedPurchased ?? 0} purchased</span>
+          </div>
         </div>
       )}
 
       {error && (
-        <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+        <div className="mt-6 border border-red-300/40 bg-red-500/10 px-5 py-4 text-sm text-red-100">
           {error}
         </div>
       )}

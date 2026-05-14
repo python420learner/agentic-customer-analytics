@@ -25,11 +25,7 @@ export default function AgentActionControls({
   }
 
   if (currentStatus === "executed" || currentStatus === "dismissed") {
-    return (
-      <span className="text-xs text-slate-400">
-        No action available
-      </span>
-    );
+    return <span className="text-xs text-black/35">No action available</span>;
   }
 
   return (
@@ -38,7 +34,7 @@ export default function AgentActionControls({
         <button
           onClick={() => updateStatus("approved")}
           disabled={!!loadingStatus}
-          className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+          className="border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.1em] text-blue-800 hover:bg-blue-100 disabled:opacity-60"
         >
           {loadingStatus === "approved" ? "Approving..." : "Approve"}
         </button>
@@ -48,17 +44,17 @@ export default function AgentActionControls({
         <button
           onClick={() => updateStatus("executed")}
           disabled={!!loadingStatus}
-          className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700 hover:bg-green-100 disabled:opacity-60"
+          className="border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.1em] text-emerald-800 hover:bg-emerald-100 disabled:opacity-60"
         >
           {loadingStatus === "executed" ? "Executing..." : "Mark Executed"}
         </button>
       )}
 
       <button
-        onClick={() => updateStatus("dismissed")}
-        disabled={!!loadingStatus}
-        className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:opacity-60"
-      >
+      onClick={() => updateStatus("dismissed")}
+      disabled={!!loadingStatus}
+      className="border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.1em] text-rose-800 hover:bg-rose-100 disabled:opacity-60"
+    >
         {loadingStatus === "dismissed" ? "Dismissing..." : "Dismiss"}
       </button>
     </div>

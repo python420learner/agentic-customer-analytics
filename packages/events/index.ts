@@ -22,24 +22,32 @@ type TrackerConfig = {
 
 export function createTracker(config: TrackerConfig) {
   async function track(event: TrackEventInput) {
-    const res = await fetch(`${config.apiUrl}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-    });
+    try {
+      const res = await fetch(`${config.apiUrl}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
+      });
 
-    if (!res.ok) {
-      const error = await res.json().catch(() => null);
-      console.error("Tracking failed:", error);
+      if (!res.ok) {
+        const error = await res.json().catch(() => null);
+        console.error("Tracking failed:", error);
+        return {
+          success: false,
+          error,
+        };
+      }
+
+      return res.json();
+    } catch (error) {
+      console.error("Tracking request failed:", error);
       return {
         success: false,
         error,
       };
     }
-
-    return res.json();
   }
 
   return {
